@@ -902,30 +902,33 @@
       submitBtn.textContent = 'Enviando…';
 
       try {
-        const data = new FormData(form);
+        const ENDPOINT = 'https://script.google.com/macros/s/AKfycbx1mJi1APJUy4l_k485QpLXQcF6nWV3VZOEVgO8yJog5vLwSWcavJFxJ0TaUCwPUX63SA/exec';
 
-        /*
-         * Reemplaza la URL con tu endpoint real.
-         * Compatible con: Formspree, Make (Integromat), Zapier, n8n, Google Apps Script, etc.
-         */
-        const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW5C9WXFoG-Rkrv8Zhes3K2TVYMYmEsxx3GcT9Wdmv4KPb6VFdke7y_IJoV6hsczmtUw/exec';
+        const datos = {
+          nombre:           form['nombre'].value.trim(),
+          apellidoPaterno:  form['apellidoPaterno'].value.trim(),
+          apellidoMaterno:  form['apellidoMaterno'].value.trim(),
+          numero:           form['numero'].value.trim(),
+          correo:           form['correo'].value.trim(),
+          organizacion:     form['organizacion'].value.trim(),
+        };
 
         await fetch(ENDPOINT, {
-          method: 'POST',
-          body: data,
-          mode: 'no-cors',
+          method:  'POST',
+          mode:    'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(datos),
         });
 
-        // Con no-cors la respuesta es opaca pero el dato llega al Sheet
         formStatus.textContent = '¡Registro enviado! Nos vemos el 16 de abril.';
-        formStatus.className = 'form-status ok';
+        formStatus.className   = 'form-status ok';
         form.reset();
       } catch (err) {
         formStatus.textContent = 'Ocurrió un error. Intenta de nuevo o escríbenos directamente.';
-        formStatus.className = 'form-status error';
+        formStatus.className   = 'form-status error';
         console.error('[Registro]', err);
       } finally {
-        submitBtn.disabled = false;
+        submitBtn.disabled    = false;
         submitBtn.textContent = 'Enviar registro';
       }
     });
